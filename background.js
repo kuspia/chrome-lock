@@ -64,6 +64,14 @@ async function remember(tabId, lockUrl) {
   await chrome.storage.session.set({ known });
 }
 
+// The new tab page is overridden with lock.html, so Chrome shows the lock screen
+// instantly at startup without waiting for this service worker to wake up.
+const NEW_TAB = 'chrome://newtab/';
+const GOOGLE_NTP = 'chrome://new-tab-page/';
+
+// Only real lock.html URLs count. A tab sitting on chrome://newtab/ may be Google's
+// own new tab page (opened before c-lock loaded), so it gets locked too; c-lock's
+// own new tab page replaces itself with lock.html?n#... immediately anyway.
 function isLockPage(url) {
   return typeof url === 'string' && url.startsWith(LOCK_PAGE);
 }
@@ -121,9 +129,11 @@ async function grabFocus(tab) {
   if (regrabbed.has(tab.id)) return;
   regrabbed.add(tab.id);
   try {
-    const t = await chrome.tabs.create({ windowId: tab.windowId, index: tab.index, url: tab.url, active: true });
+    // Never reopen as chrome://newtab (address bar would get focus again).
+    const url = tab.url === NEW_TAB ? LOCK_PAGE + '?n#' + NEW_TAB : tab.url;
+    const t = await chrome.tabs.create({ windowId: tab.windowId, index: tab.index, url, active: true });
     regrabbed.add(t.id);
-    await remember(t.id, tab.url);
+    await remember(t.id, url);
     await chrome.tabs.remove(tab.id);
   } catch (_) {}
 }
@@ -166,7 +176,8 @@ async function unlock() {
 }
 
 function releaseTab(tabId, lockUrl) {
-  const orig = originalUrlFrom(lockUrl) || 'chrome://newtab/';
+  let orig = originalUrlFrom(lockUrl);
+  if (!orig || orig === NEW_TAB) orig = GOOGLE_NTP;
   chrome.tabs.update(tabId, { url: orig }).catch(() => {});
 }
 

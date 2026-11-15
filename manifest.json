@@ -13,6 +13,7 @@
       "description": "Lock Chrome now"
     }
   },
+  "chrome_url_overrides": { "newtab": "lock.html" },
   "web_accessible_resources": [
     { "resources": ["lock.html"], "matches": ["<all_urls>"] }
   ],

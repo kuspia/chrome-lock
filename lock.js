@@ -24,9 +24,38 @@ function die(human) {
 
 addEventListener('beforeunload', () => { leaving = true; });
 
-// Already unlocked (e.g. Back button)? The background moves this tab onward.
-// Opened by a navigation attempt while locked? The background closes Chrome.
-chrome.runtime.sendMessage({ type: 'status' }).then(r => { if (r && !r.locked) leaving = true; });
+// Lock state is read right here (no waiting for the background to wake up).
+// Unlocked: this is just a new tab / old lock tab -> go to the real page at once.
+// Locked: show the lock screen; the background also checks how the tab got here
+// and closes Chrome if it was a navigation attempt.
+document.documentElement.style.visibility = 'hidden';
+chrome.declarativeNetRequest.getSessionRules().then(async rules => {
+  if (rules.some(r => r.id === 2)) {           // ALLOW rule = unlocked
+    leaving = true;
+    const i = location.href.indexOf('#');
+    let orig = i < 0 ? '' : location.href.slice(i + 1);
+    if (!orig || /^(javascript|data):/i.test(orig) || orig === 'chrome://newtab/') {
+      // Google's normal new tab page; if that bounces back here within 2s, use google.com.
+      let last = 0;
+      try { last = +sessionStorage.getItem('ntpJump') || 0; sessionStorage.setItem('ntpJump', Date.now()); } catch (_) {}
+      orig = Date.now() - last < 2000 ? 'https://www.google.com/' : 'chrome://new-tab-page/';
+    }
+    const t = await chrome.tabs.getCurrent();
+    chrome.tabs.update(t.id, { url: orig });
+    return;
+  }
+  // Shown as the new tab page: Chrome keeps keyboard focus in the address bar for
+  // that. Reload as a normal page (real navigation, not just a #hash change) so
+  // the keyboard goes to the page instead.
+  if (!location.search && !location.hash) {
+    leaving = true;
+    location.replace(location.pathname + '?n#chrome://newtab/');
+    return;
+  }
+  document.documentElement.style.visibility = '';
+  pw.focus();
+  chrome.runtime.sendMessage({ type: 'status' });
+});
 
 // ---- strict watch: only the keyboard is allowed; any mouse use closes Chrome ----
 document.addEventListener('mousedown', () => die(true), true);
@@ -61,19 +90,26 @@ addEventListener('blur', () => die(false));
 
 pw.focus();
 
-// Every frame (~16ms, only while the tab is visible): if the password box doesn't
-// have focus, close. Catches the case where focus started in the address bar, so
-// no "blur" ever happened. During the startup grace period, ask the background
-// once to reopen this tab so the password box gets focus instead.
-let askedForFocus = false;
+// Every frame (~16ms, only while the tab is visible): if this page's window is the
+// one in front but the password box doesn't have focus, focus is in Chrome's own
+// UI (address bar, menus...) -> close. Catches focus that started in the address
+// bar, where no "blur" ever happens. Lock screens in other, background windows are
+// ignored. During the startup grace period, ask the background once to reopen this
+// tab so the password box gets focus instead.
+let askedForFocus = false, checking = false;
+const pwFocused = () => document.hasFocus() && document.activeElement === pw;
 function watch() {
-  if (document.visibilityState === 'visible' &&
-      !(document.hasFocus() && document.activeElement === pw)) {
-    if (!inGrace()) die(false);
-    else if (!askedForFocus && !document.hasFocus()) {
-      askedForFocus = true;
-      chrome.runtime.sendMessage({ type: 'unfocused', armed: false });
-    }
+  if (!dead && !leaving && !checking && document.visibilityState === 'visible' && !pwFocused()) {
+    checking = true;
+    chrome.windows.getCurrent().then(w => {
+      checking = false;
+      if (!w.focused || pwFocused()) return;   // background window / another app in front
+      if (!inGrace()) die(false);
+      else if (!askedForFocus && !document.hasFocus()) {
+        askedForFocus = true;
+        chrome.runtime.sendMessage({ type: 'unfocused', armed: false });
+      }
+    }, () => { checking = false; });
   }
   if (!dead) requestAnimationFrame(watch);
 }

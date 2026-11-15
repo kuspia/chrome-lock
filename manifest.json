@@ -1,12 +1,20 @@
 {
-    "name": "This is the Kushagra Private Browser",
-    "version": "1.1.7", 
-    "manifest_version": 2,
-    "background": {
-        "persistent": true,
-        "scripts": ["background.js"]
-    },
-
-    "browser_action": {},
-    "permissions": [ "tabs"  ]
+  "manifest_version": 3,
+  "name": "c-lock",
+  "version": "1.0.0",
+  "description": "Locks the whole browser until the password is entered. Pages are blocked before they load.",
+  "permissions": ["declarativeNetRequest", "tabs", "storage", "history", "idle", "webNavigation"],
+  "host_permissions": ["<all_urls>"],
+  "background": { "service_worker": "background.js" },
+  "action": { "default_title": "c-lock: lock now (Alt+Shift+L)" },
+  "commands": {
+    "lock-now": {
+      "suggested_key": { "default": "Alt+Shift+L" },
+      "description": "Lock Chrome now"
+    }
+  },
+  "web_accessible_resources": [
+    { "resources": ["lock.html"], "matches": ["<all_urls>"] }
+  ],
+  "incognito": "spanning"
 }

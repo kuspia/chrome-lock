@@ -7,64 +7,44 @@
 <style>
   html, body { margin: 0; height: 100%; background: #111; color: #ddd; font: 15px system-ui, sans-serif; }
   body { display: flex; align-items: center; justify-content: center; }
-  form { display: flex; flex-direction: column; gap: 10px; width: 300px; text-align: center; }
+  form { display: flex; flex-direction: column; gap: 10px; width: 340px; text-align: center; }
   h1 { font-size: 20px; font-weight: 600; margin: 0; }
   p { margin: 0 0 6px; color: #999; font-size: 13px; }
-  /* Kicking shoe */
-  .kick { width: 296px; height: 184px; margin: 0 auto 6px; overflow: visible; }
-  .kick .bum { transform-origin: 277px 98px; animation: bum 1.6s ease-out infinite; }
-  /* jiggle */
-  .kick .cheek-l { transform-origin: 270px 44px; animation: jiggle 1.6s linear infinite; }
-  @keyframes jiggle {
-    0%, 68% { transform: scale(1, 1); }
-    71%     { transform: scale(0.8, 1.12); }
-    75%     { transform: scale(1.1, 0.92); }
-    79%     { transform: scale(0.94, 1.05); }
-    83%     { transform: scale(1.03, 0.98); }
-    88%, 100% { transform: scale(1, 1); }
+
+  /* GET OUT! shakes and flares brighter red each time the shoe lands (same 1.6s loop as the kick) */
+  .getout { font-size: 44px; font-weight: 900; letter-spacing: 3px; color: #e5392f; text-shadow: 0 2px 0 #7a1410; margin: 0 0 4px;
+            animation: getout 1.6s linear infinite; }
+  @keyframes getout {
+    0%, 67% { transform: none; color: #e5392f; text-shadow: 0 2px 0 #7a1410; }
+    70%     { transform: translate(-7px, 2px) rotate(-4deg) scale(1.14); color: #ff1206; text-shadow: 0 2px 0 #7a1410, 0 0 22px #ff2a1a, 0 0 6px #ff6a5a; }
+    73%     { transform: translate(7px, -2px) rotate(4deg) scale(1.14); color: #ff1206; text-shadow: 0 2px 0 #7a1410, 0 0 22px #ff2a1a, 0 0 6px #ff6a5a; }
+    76%     { transform: translate(-6px, 1px) rotate(-3deg) scale(1.1); color: #ff1206; text-shadow: 0 2px 0 #7a1410, 0 0 18px #ff2a1a; }
+    79%     { transform: translate(5px, -1px) rotate(2.5deg) scale(1.08); color: #ff1c10; text-shadow: 0 2px 0 #7a1410, 0 0 14px #ff2a1a; }
+    83%     { transform: translate(-3px, 1px) rotate(-1.5deg) scale(1.05); color: #f8261a; text-shadow: 0 2px 0 #7a1410, 0 0 10px #ff2a1a; }
+    87%     { transform: translate(2px, 0) rotate(1deg) scale(1.02); color: #f02e23; text-shadow: 0 2px 0 #7a1410, 0 0 6px #ff2a1a; }
+    93%, 100% { transform: none; color: #e5392f; text-shadow: 0 2px 0 #7a1410; }
   }
-  /* turns red where it got kicked */
-  .kick .red { opacity: 0; animation: red 1.6s ease-out infinite; }
-  @keyframes red  { 0%, 68% { opacity: 0; } 72% { opacity: 0.9; } 92% { opacity: 0.75; } 100% { opacity: 0; } }
-  /* ripples */
-  .kick .ripple { transform-origin: 244px 46px; opacity: 0; animation: ripple 1.6s ease-out infinite; }
-  .kick .r2 { animation-delay: 0.1s; }
-  .kick .r3 { animation-delay: 0.2s; }
-  @keyframes ripple {
-    0%, 68% { transform: scale(0.1); opacity: 0; }
-    70%     { transform: scale(0.2); opacity: 1; }
-    90%     { transform: scale(3.2); opacity: 0; }
-    100%    { transform: scale(3.2); opacity: 0; }
-  }
-  @keyframes bum {
-    0%, 66%  { transform: translate(0, 0) rotate(0); }
-    72%      { transform: translate(16px, -12px) rotate(9deg); }   /* OOF */
-    86%      { transform: translate(6px, -3px) rotate(3deg); }
-    100%     { transform: translate(0, 0) rotate(0); }
-  }
-  .kick .leg { transform-origin: 77px -60px; animation: kick 1.6s ease-in-out infinite; }
-  .kick .burst { transform-origin: 200px 104px; animation: burst 1.6s ease-out infinite; }
+
+  /* Kick animation */
+  .kick { width: 340px; height: 193px; margin: 0 auto 6px; overflow: visible; }
+  .kick .leg   { transform-origin: 77px -60px; animation: kick 1.6s ease-in-out infinite; }
+  .kick .burst { transform-box: fill-box; transform-origin: center; animation: burst 1.6s ease-out infinite; }
   .kick .lines { animation: lines 1.6s linear infinite; }
-  @keyframes kick {
-    0%, 100% { transform: rotate(8deg); }
-    55%      { transform: rotate(22deg); }   /* wind up */
-    68%      { transform: rotate(-28deg); }  /* KICK */
-    80%      { transform: rotate(-22deg); }
-  }
-  @keyframes burst {
-    0%, 64%  { transform: scale(0); opacity: 0; }
-    70%      { transform: scale(1.15); opacity: 1; }
-    85%      { transform: scale(1); opacity: 0.9; }
-    100%     { transform: scale(0.4); opacity: 0; }
-  }
-  @keyframes lines {
-    0%, 62% { opacity: 0; }
-    70%     { opacity: 1; }
-    100%    { opacity: 0; }
-  }
+  .kick .bum   { transform-box: fill-box; transform-origin: 60% 45%; animation: bum 1.6s ease-out infinite; }
+  .kick .soft  { transform-box: fill-box; transform-origin: 75% 50%; animation: jiggle 1.6s linear infinite; }
+  .kick .red   { opacity: 0; animation: red 1.6s ease-out infinite; }
+  .kick .rip   { transform-box: fill-box; transform-origin: center; opacity: 0; animation: ripple 1.6s ease-out infinite; }
+  .kick .rip.b { animation-delay: 0.1s; }
+  .kick .rip.c { animation-delay: 0.2s; }
+  @keyframes kick { 0%,100% { transform: rotate(8deg); } 55% { transform: rotate(22deg); } 68% { transform: rotate(-28deg); } 80% { transform: rotate(-22deg); } }
+  @keyframes burst { 0%,64% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.15); opacity: 1; } 85% { transform: scale(1); opacity: .9; } 100% { transform: scale(.4); opacity: 0; } }
+  @keyframes lines { 0%,62% { opacity: 0; } 70% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes bum { 0%,66% { transform: none; } 72% { transform: translate(14px,-8px) rotate(5deg); } 86% { transform: translate(5px,-2px) rotate(1.5deg); } 100% { transform: none; } }
+  @keyframes jiggle { 0%,68% { transform: none; } 71% { transform: scale(.88,1.07); } 75% { transform: scale(1.06,.95); } 79% { transform: scale(.96,1.035); } 83% { transform: scale(1.025,.985); } 87% { transform: scale(.99,1.01); } 91%,100% { transform: none; } }
+  @keyframes red { 0%,68% { opacity: 0; } 73% { opacity: .8; } 92% { opacity: .65; } 100% { opacity: 0; } }
+  @keyframes ripple { 0%,68% { transform: scale(.1); opacity: 0; } 70% { transform: scale(.2); opacity: .7; } 90%,100% { transform: scale(3.4); opacity: 0; } }
   @media (prefers-reduced-motion: reduce) {
-    .kick .leg, .kick .burst, .kick .lines, .kick .bum,
-    .kick .cheek-l, .kick .red, .kick .ripple { animation: none; }
+    .getout, .kick .leg, .kick .burst, .kick .lines, .kick .bum, .kick .soft, .kick .red, .kick .rip { animation: none; }
   }
 
   /* Invisible but still focusable, so the keyboard goes to it. */
@@ -74,59 +54,72 @@
 </head>
 <body>
 <form id="f" autocomplete="off">
-  <svg class="kick" viewBox="0 -70 370 230" aria-hidden="true">
-    <!-- speed lines along the kick's swing -->
+  <div class="getout">GET OUT!</div>
+  <svg class="kick" viewBox="0 -82 440 250" aria-hidden="true">
     <g class="lines" stroke="#777" stroke-width="5" stroke-linecap="round">
-      <line x1="138" y1="128" x2="168" y2="112"/>
-      <line x1="150" y1="146" x2="190" y2="122"/>
-      <line x1="170" y1="156" x2="202" y2="134"/>
-    </g>
-    <!-- leg + shoe, swings from the hip -->
-    <g class="leg">
-      <rect x="60" y="-60" width="34" height="120" rx="8" fill="#3b4a6b"/>
-      <path d="M58 118 L58 62 Q58 52 68 52 L94 52 L104 72 Q132 74 152 88 Q172 97 172 112 L172 118 Z" fill="#d6453b"/>
-      <path d="M68 52 L94 52 L97 60 L66 60 Z" fill="#a8322a"/>
-      <g stroke="#fff" stroke-width="3" stroke-linecap="round">
-        <line x1="104" y1="80" x2="96" y2="94"/>
-        <line x1="116" y1="82" x2="108" y2="97"/>
-        <line x1="128" y1="86" x2="120" y2="100"/>
-      </g>
-      <rect x="52" y="116" width="124" height="16" rx="8" fill="#e8e8e8"/>
-      <rect x="52" y="126" width="124" height="6" rx="3" fill="#bbb"/>
-    </g>
-    <!-- the bum getting kicked (side view, jeans, bulging toward the shoe) -->
-    <defs>
-      <clipPath id="cheeks">
-        <path d="M266 8 C254 14 240 30 242 48 C243 64 254 76 270 76 L296 76 C303 60 303 24 297 8 Z"/>
-      </clipPath>
-    </defs>
+    <line x1="138" y1="128" x2="168" y2="112"/><line x1="150" y1="146" x2="190" y2="122"/><line x1="170" y1="156" x2="202" y2="134"/></g>
     <g transform="translate(246 46) scale(1.4) translate(-246 -46)">
-    <g class="bum">
-      <g class="cheek-l">
-        <path d="M266 8 C254 14 240 30 242 48 C243 64 254 76 270 76 L296 76 C303 60 303 24 297 8 Z" fill="#4a6fa5"/>
-        <path class="red" d="M266 8 C254 14 240 30 242 48 C243 64 254 76 270 76 L296 76 C303 60 303 24 297 8 Z" fill="#e0302a"/>
-        <!-- back pocket -->
-        <path d="M249 28 L263 25 L265 41 L258 46 L251 43 Z" fill="none" stroke="#2f4a73" stroke-width="2" stroke-linejoin="round"/>
-        <!-- crease under the cheek -->
-        <path d="M257 70 Q272 74 290 68" fill="none" stroke="#2f4a73" stroke-width="2.5" stroke-linecap="round"/>
+  <defs>
+    <clipPath id="cp1"><path d="M262 -40 C258 -24 250 -8 240 4 C226 16 216 32 218 50 C220 66 230 78 244 84 C248 96 250 110 252 126 L330 126 C332 108 334 92 334 78 C338 56 336 30 330 6 C326 -10 322 -26 322 -40 Z"/></clipPath>
+    <linearGradient id="bx1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#eec0a0"/><stop offset=".5" stop-color="#eec0a0"/><stop offset="1" stop-color="#c08663"/></linearGradient>
+    <linearGradient id="by1" x1="0" y1="0" x2="0" y2="1"><stop offset=".55" stop-color="#c08663" stop-opacity="0"/><stop offset="1" stop-color="#c08663" stop-opacity=".45"/></linearGradient>
+    
+    <radialGradient id="sl1_0" cx="231.84" cy="37.4" r="23.1" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe6d6" stop-opacity="0.45"/><stop offset=".5" stop-color="#ffe6d6" stop-opacity="0.1575"/><stop offset="1" stop-color="#ffe6d6" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sd1_0" cx="230.3" cy="35.2" r="34.1" gradientUnits="userSpaceOnUse">
+      <stop offset=".55" stop-color="#c08663" stop-opacity="0"/><stop offset="1" stop-color="#c08663" stop-opacity="0.36000000000000004"/></radialGradient>
+    <radialGradient id="sb1_0" cx="233.6" cy="47.3" r="17.6" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f29a86" stop-opacity="0.171"/><stop offset="1" stop-color="#f29a86" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sl1_1" cx="262.8" cy="38" r="42" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe6d6" stop-opacity="0.8"/><stop offset=".5" stop-color="#ffe6d6" stop-opacity="0.27999999999999997"/><stop offset="1" stop-color="#ffe6d6" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sd1_1" cx="260" cy="34" r="62" gradientUnits="userSpaceOnUse">
+      <stop offset=".55" stop-color="#c08663" stop-opacity="0"/><stop offset="1" stop-color="#c08663" stop-opacity="0.6400000000000001"/></radialGradient>
+    <radialGradient id="sb1_1" cx="266" cy="56" r="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f29a86" stop-opacity="0.30400000000000005"/><stop offset="1" stop-color="#f29a86" stop-opacity="0"/></radialGradient>
+    <radialGradient id="rd1" cx="230" cy="50" r="38" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e2281f" stop-opacity=".95"/><stop offset=".6" stop-color="#e2281f" stop-opacity=".55"/><stop offset="1" stop-color="#e2281f" stop-opacity="0"/></radialGradient>
+    <filter id="fd1" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter>
+    <filter id="fl1" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4"/></filter>
+    <filter id="fc1" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="0.7"/></filter>
+    <linearGradient id="fg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".18" stop-color="#fff"/><stop offset=".84" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <mask id="fm1" maskUnits="userSpaceOnUse" x="200" y="-42" width="190" height="170"><rect x="200" y="-42" width="190" height="170" fill="url(#fg1)"/></mask>
+  </defs>
+  <g transform="translate(19 0)">
+  <g class="bum" mask="url(#fm1)">
+    <g class="soft">
+      <path d="M262 -40 C258 -24 250 -8 240 4 C226 16 216 32 218 50 C220 66 230 78 244 84 C248 96 250 110 252 126 L330 126 C332 108 334 92 334 78 C338 56 336 30 330 6 C326 -10 322 -26 322 -40 Z" fill="url(#bx1)"/>
+      <g clip-path="url(#cp1)">
+        <path d="M262 -40 C258 -24 250 -8 240 4 C226 16 216 32 218 50 C220 66 230 78 244 84 C248 96 250 110 252 126 L330 126 C332 108 334 92 334 78 C338 56 336 30 330 6 C326 -10 322 -26 322 -40 Z" fill="url(#by1)"/>
+        <!-- soft shadows -->
+        <g filter="url(#fd1)" fill="none" stroke-linecap="round">
+          <circle cx="238" cy="44" r="22" fill="url(#sd1_0)"/><circle cx="274" cy="50" r="40" fill="url(#sd1_1)"/>
+          <path d="M259 6 C243 18 229 36 231 52 C233 68 241 80 253 86" stroke="#7a4630" stroke-width="10" opacity="0.7"/><path d="M254 89 C270 97 292 95 308 83" stroke="#7a4630" stroke-width="9" opacity="0.75"/><path d="M228 82 C236 88 246 89 254 88" stroke="#7a4630" stroke-width="7" opacity="0.6"/><path d="M256 90 C256 102 257 114 258 128" stroke="#7a4630" stroke-width="7" opacity="0.85"/><path d="M280 -40 C278 -24 272 -8 263 4" stroke="#7a4630" stroke-width="7" opacity="0.35"/><path d="M312 8 C322 28 322 54 314 76" stroke="#7a4630" stroke-width="14" opacity="0.35"/><path d="M332 20 C338 44 336 64 334 80" stroke="#7a4630" stroke-width="12" opacity="0.3"/>
+          <ellipse cx="256" cy="-8" rx="4" ry="5" fill="#7a4630" opacity=".4"/><ellipse cx="288" cy="-6" rx="4" ry="5" fill="#7a4630" opacity=".4"/>
+        </g>
+        <!-- warm blush + soft light on the round of each cheek -->
+        <circle cx="238" cy="44" r="22" fill="url(#sb1_0)"/><circle cx="238" cy="44" r="23.1" fill="url(#sl1_0)"/><circle cx="274" cy="50" r="40" fill="url(#sb1_1)"/><circle cx="274" cy="50" r="42" fill="url(#sl1_1)"/>
+        <g filter="url(#fl1)" fill="none" stroke-linecap="round">
+          <path d="M224 34 C228 22 236 10 246 2" stroke="#ffe6d6" stroke-width="6" opacity="0.4"/><path d="M268 12 C253 22 241 38 242 52" stroke="#ffe6d6" stroke-width="5" opacity="0.3"/>
+        </g>
+        <!-- creases -->
+        <g filter="url(#fc1)" fill="none" stroke="#7a4630" stroke-width="1.5" stroke-linecap="round" opacity=".75">
+          <path d="M262 8 C247 19 233 37 235 52 C237 67 245 79 256 86"/><path d="M256 86 C270 94 292 92 307 80"/><path d="M229 80 C237 86 246 87 254 86"/>
+        </g>
+        <!-- hit: goes red, ripples spread -->
+        <circle class="red" cx="230" cy="50" r="38" fill="url(#rd1)"/>
+        <g fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2">
+          <circle class="rip" cx="222" cy="50" r="14"/><circle class="rip b" cx="222" cy="50" r="14"/><circle class="rip c" cx="222" cy="50" r="14"/>
+        </g>
       </g>
-      <!-- ripples spreading over the bum from where the shoe hits -->
-      <g clip-path="url(#cheeks)" fill="none" stroke="#ffd2cc" stroke-width="2.5">
-        <circle class="ripple" cx="244" cy="46" r="14"/>
-        <circle class="ripple r2" cx="244" cy="46" r="14"/>
-        <circle class="ripple r3" cx="244" cy="46" r="14"/>
-      </g>
-      <!-- waistband + belt loop -->
-      <path d="M264 3 L299 3 L299 13 L262 13 Q262 7 264 3 Z" fill="#2f4a73"/>
-      <rect x="276" y="2" width="5" height="12" rx="1.5" fill="#24395a"/>
     </g>
+  </g></g>
     </g>
-    <!-- impact burst where the toe lands at full kick -->
-    <g transform="translate(38 -56)">
-      <g class="burst" fill="#f5c542">
-        <path d="M196 96 l6 -16 l4 15 l14 -6 l-9 12 l12 8 l-15 0 l2 15 l-10 -11 l-9 11 l1 -15 l-14 -1 l12 -8 l-8 -12 l13 6 z"/>
-      </g>
-    </g>
+    <g class="leg">
+    <rect x="60" y="-60" width="34" height="120" rx="8" fill="#3b4a6b"/>
+    <path d="M58 118 L58 62 Q58 52 68 52 L94 52 L104 72 Q132 74 152 88 Q172 97 172 112 L172 118 Z" fill="#d6453b"/>
+    <path d="M68 52 L94 52 L97 60 L66 60 Z" fill="#a8322a"/>
+    <g stroke="#fff" stroke-width="3" stroke-linecap="round"><line x1="104" y1="80" x2="96" y2="94"/><line x1="116" y1="82" x2="108" y2="97"/><line x1="128" y1="86" x2="120" y2="100"/></g>
+    <rect x="52" y="116" width="124" height="16" rx="8" fill="#e8e8e8"/><rect x="52" y="126" width="124" height="6" rx="3" fill="#bbb"/></g>
+    <g transform="translate(38 -56)"><g class="burst" fill="#f5c542"><path d="M196 96 l6 -16 l4 15 l14 -6 l-9 12 l12 8 l-15 0 l2 15 l-10 -11 l-9 11 l1 -15 l-14 -1 l12 -8 l-8 -12 l13 6 z"/></g></g>
   </svg>
   <h1>My browser. Don't open it.</h1>
   <p>Use <b>Chrome Guest</b> from the taskbar below.</p>

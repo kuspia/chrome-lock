@@ -3,22 +3,76 @@
 <head>
 <meta charset="utf-8">
 <title>Locked</title>
-<link rel="icon" href="data:,">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
 <style>
   html, body { margin: 0; height: 100%; background: #111; color: #ddd; font: 15px system-ui, sans-serif; }
   body { display: flex; align-items: center; justify-content: center; }
   form { display: flex; flex-direction: column; gap: 10px; width: 260px; text-align: center; }
   h1 { font-size: 20px; font-weight: 600; margin: 0; }
   p { margin: 0 0 6px; color: #999; font-size: 13px; }
-  input { padding: 10px 12px; border-radius: 8px; border: 1px solid #333; background: #1c1c1c; color: #fff; font-size: 16px; outline: none; }
-  input:focus { border-color: #5b8def; }
+  /* Kicking shoe */
+  .kick { width: 216px; height: 184px; margin: 0 auto 6px; overflow: visible; }
+  .kick .leg { transform-origin: 77px -60px; animation: kick 1.6s ease-in-out infinite; }
+  .kick .burst { transform-origin: 200px 104px; animation: burst 1.6s ease-out infinite; }
+  .kick .lines { animation: lines 1.6s linear infinite; }
+  @keyframes kick {
+    0%, 100% { transform: rotate(8deg); }
+    55%      { transform: rotate(22deg); }   /* wind up */
+    68%      { transform: rotate(-28deg); }  /* KICK */
+    80%      { transform: rotate(-22deg); }
+  }
+  @keyframes burst {
+    0%, 64%  { transform: scale(0); opacity: 0; }
+    70%      { transform: scale(1.15); opacity: 1; }
+    85%      { transform: scale(1); opacity: 0.9; }
+    100%     { transform: scale(0.4); opacity: 0; }
+  }
+  @keyframes lines {
+    0%, 62% { opacity: 0; }
+    70%     { opacity: 1; }
+    100%    { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .kick .leg, .kick .burst, .kick .lines { animation: none; }
+  }
+
+  /* Invisible but still focusable, so the keyboard goes to it. */
+  input { position: absolute; left: 0; top: 0; width: 1px; height: 1px; padding: 0; border: 0;
+          opacity: 0; caret-color: transparent; background: transparent; color: transparent; outline: none; }
 </style>
 </head>
 <body>
 <form id="f" autocomplete="off">
+  <svg class="kick" viewBox="0 -70 270 230" aria-hidden="true">
+    <!-- speed lines along the kick's swing -->
+    <g class="lines" stroke="#777" stroke-width="5" stroke-linecap="round">
+      <line x1="138" y1="128" x2="168" y2="112"/>
+      <line x1="150" y1="146" x2="190" y2="122"/>
+      <line x1="170" y1="156" x2="202" y2="134"/>
+    </g>
+    <!-- leg + shoe, swings from the hip -->
+    <g class="leg">
+      <rect x="60" y="-60" width="34" height="120" rx="8" fill="#3b4a6b"/>
+      <path d="M58 118 L58 62 Q58 52 68 52 L94 52 L104 72 Q132 74 152 88 Q172 97 172 112 L172 118 Z" fill="#d6453b"/>
+      <path d="M68 52 L94 52 L97 60 L66 60 Z" fill="#a8322a"/>
+      <g stroke="#fff" stroke-width="3" stroke-linecap="round">
+        <line x1="104" y1="80" x2="96" y2="94"/>
+        <line x1="116" y1="82" x2="108" y2="97"/>
+        <line x1="128" y1="86" x2="120" y2="100"/>
+      </g>
+      <rect x="52" y="116" width="124" height="16" rx="8" fill="#e8e8e8"/>
+      <rect x="52" y="126" width="124" height="6" rx="3" fill="#bbb"/>
+    </g>
+    <!-- impact burst where the toe lands at full kick -->
+    <g transform="translate(38 -56)">
+      <g class="burst" fill="#f5c542">
+        <path d="M196 96 l6 -16 l4 15 l14 -6 l-9 12 l12 8 l-15 0 l2 15 l-10 -11 l-9 11 l1 -15 l-14 -1 l12 -8 l-8 -12 l13 6 z"/>
+      </g>
+    </g>
+  </svg>
   <h1>My browser. Don't open it.</h1>
   <p>Use <b>Chrome Guest</b> from the taskbar below.</p>
-  <input id="pw" type="password" placeholder="Password" autofocus>
+  <input id="pw" type="password" autofocus aria-hidden="true">
 </form>
 <script src="lock.js"></script>
 </body>

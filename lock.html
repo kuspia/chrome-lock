@@ -14,8 +14,7 @@
   .kick { width: 296px; height: 184px; margin: 0 auto 6px; overflow: visible; }
   .kick .bum { transform-origin: 277px 98px; animation: bum 1.6s ease-out infinite; }
   /* jiggle */
-  .kick .cheek-l { transform-origin: 262px 40px; animation: jiggle 1.6s linear infinite; }
-  .kick .cheek-r { transform-origin: 292px 40px; animation: jiggle 1.6s linear infinite; animation-delay: 0.04s; }
+  .kick .cheek-l { transform-origin: 270px 44px; animation: jiggle 1.6s linear infinite; }
   @keyframes jiggle {
     0%, 68% { transform: scale(1, 1); }
     71%     { transform: scale(0.8, 1.12); }
@@ -26,11 +25,9 @@
   }
   /* turns red where it got kicked */
   .kick .red { opacity: 0; animation: red 1.6s ease-out infinite; }
-  .kick .red2 { animation-name: red2; }
   @keyframes red  { 0%, 68% { opacity: 0; } 72% { opacity: 0.9; } 92% { opacity: 0.75; } 100% { opacity: 0; } }
-  @keyframes red2 { 0%, 70% { opacity: 0; } 76% { opacity: 0.55; } 92% { opacity: 0.4; } 100% { opacity: 0; } }
   /* ripples */
-  .kick .ripple { transform-origin: 246px 46px; opacity: 0; animation: ripple 1.6s ease-out infinite; }
+  .kick .ripple { transform-origin: 244px 46px; opacity: 0; animation: ripple 1.6s ease-out infinite; }
   .kick .r2 { animation-delay: 0.1s; }
   .kick .r3 { animation-delay: 0.2s; }
   @keyframes ripple {
@@ -67,7 +64,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .kick .leg, .kick .burst, .kick .lines, .kick .bum,
-    .kick .cheek-l, .kick .cheek-r, .kick .red, .kick .ripple { animation: none; }
+    .kick .cheek-l, .kick .red, .kick .ripple { animation: none; }
   }
 
   /* Invisible but still focusable, so the keyboard goes to it. */
@@ -97,34 +94,31 @@
       <rect x="52" y="116" width="124" height="16" rx="8" fill="#e8e8e8"/>
       <rect x="52" y="126" width="124" height="6" rx="3" fill="#bbb"/>
     </g>
-    <!-- the bum getting kicked (jeans, back view) -->
+    <!-- the bum getting kicked (side view, jeans, bulging toward the shoe) -->
     <defs>
       <clipPath id="cheeks">
-        <ellipse cx="262" cy="40" rx="18" ry="22"/>
-        <ellipse cx="292" cy="40" rx="18" ry="22"/>
+        <path d="M266 8 C254 14 240 30 242 48 C243 64 254 76 270 76 L296 76 C303 60 303 24 297 8 Z"/>
       </clipPath>
     </defs>
     <g transform="translate(246 46) scale(1.4) translate(-246 -46)">
     <g class="bum">
-      <rect x="248" y="52" width="26" height="46" rx="6" fill="#3f5f8f"/>
-      <rect x="280" y="52" width="26" height="46" rx="6" fill="#3f5f8f"/>
       <g class="cheek-l">
-        <ellipse cx="262" cy="40" rx="18" ry="22" fill="#4a6fa5"/>
-        <ellipse class="red" cx="262" cy="40" rx="18" ry="22" fill="#e0302a"/>
+        <path d="M266 8 C254 14 240 30 242 48 C243 64 254 76 270 76 L296 76 C303 60 303 24 297 8 Z" fill="#4a6fa5"/>
+        <path class="red" d="M266 8 C254 14 240 30 242 48 C243 64 254 76 270 76 L296 76 C303 60 303 24 297 8 Z" fill="#e0302a"/>
+        <!-- back pocket -->
+        <path d="M249 28 L263 25 L265 41 L258 46 L251 43 Z" fill="none" stroke="#2f4a73" stroke-width="2" stroke-linejoin="round"/>
+        <!-- crease under the cheek -->
+        <path d="M257 70 Q272 74 290 68" fill="none" stroke="#2f4a73" stroke-width="2.5" stroke-linecap="round"/>
       </g>
-      <g class="cheek-r">
-        <ellipse cx="292" cy="40" rx="18" ry="22" fill="#4a6fa5"/>
-        <ellipse class="red red2" cx="292" cy="40" rx="18" ry="22" fill="#e0302a"/>
-      </g>
-      <!-- ripples spreading over the cheeks from where the shoe hits -->
+      <!-- ripples spreading over the bum from where the shoe hits -->
       <g clip-path="url(#cheeks)" fill="none" stroke="#ffd2cc" stroke-width="2.5">
-        <circle class="ripple" cx="246" cy="46" r="14"/>
-        <circle class="ripple r2" cx="246" cy="46" r="14"/>
-        <circle class="ripple r3" cx="246" cy="46" r="14"/>
+        <circle class="ripple" cx="244" cy="46" r="14"/>
+        <circle class="ripple r2" cx="244" cy="46" r="14"/>
+        <circle class="ripple r3" cx="244" cy="46" r="14"/>
       </g>
-      <path d="M277 22 Q276 40 277 58" stroke="#2f4a73" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <rect x="243" y="12" width="68" height="10" rx="3" fill="#2f4a73"/>
-      <rect x="272" y="13" width="10" height="8" rx="1.5" fill="#c9a227"/>
+      <!-- waistband + belt loop -->
+      <path d="M264 3 L299 3 L299 13 L262 13 Q262 7 264 3 Z" fill="#2f4a73"/>
+      <rect x="276" y="2" width="5" height="12" rx="1.5" fill="#24395a"/>
     </g>
     </g>
     <!-- impact burst where the toe lands at full kick -->
